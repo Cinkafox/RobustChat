@@ -1,4 +1,5 @@
-﻿using Robust.Client;
+﻿using Content.Client.Lobby;
+using Robust.Client;
 using Robust.Client.State;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
@@ -18,6 +19,7 @@ public sealed class ConnectingState : State
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
+    [Dependency] private readonly IStateManager _stateManager = default!;
     
     public const string LOCAL_ADDRESS = "ss14://localhost:1212/";
     public string Address => _gameController.LaunchState.Ss14Address 
@@ -58,6 +60,7 @@ public sealed class ConnectingState : State
             case ClientConnectionState.Handshake:
                 break;
             case ClientConnectionState.Connected:
+                _stateManager.RequestStateChange<LobbyState>();
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(state), state, null);

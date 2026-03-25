@@ -1,4 +1,4 @@
-﻿using Content.Shared.GameTicking;
+﻿using Content.Server.Chat;
 using Robust.Server.Console;
 using Robust.Shared.Console;
 using Robust.Shared.Enums;
@@ -10,18 +10,26 @@ using Robust.Shared.Toolshed.Errors;
 namespace Content.Server.GameTicking;
 
 
-public sealed class GameTicker : SharedGameTicker
+public sealed partial class GameTicker : EntitySystem
 {
     [Dependency] private readonly IConGroupController _groupController = default!;
+    [Dependency] private readonly ChannelSystem _channelSystem = default!;
+    [Dependency] private readonly ISharedPlayerManager _playerManager = default!;
 
     public ContentGroupController GroupController = new ContentGroupController();
+
+    public EntityUid DefaultChannel = default!;
 
     public override void Initialize()
     {
         base.Initialize();
-        IsServer = true;
-        PlayerManager.PlayerStatusChanged += OnPlayerStatusChanged;
+        _playerManager.PlayerStatusChanged += OnPlayerStatusChanged;
         _groupController.Implementation = GroupController;
+    }
+
+    public void PostInitialize()
+    {
+        DefaultChannel = _channelSystem.CreateChannel("default");
     }
 
     private void OnPlayerStatusChanged(object? sender, SessionStatusEventArgs args)
@@ -31,7 +39,7 @@ public sealed class GameTicker : SharedGameTicker
         switch (args.NewStatus)
         {
             case SessionStatus.Connected:
-                Timer.Spawn(0, () => PlayerManager.JoinGame(session));
+                Timer.Spawn(0, () => _playerManager.JoinGame(session));
                 Log.Info($"{session.Name} was connected");
                 break;
             case SessionStatus.InGame:

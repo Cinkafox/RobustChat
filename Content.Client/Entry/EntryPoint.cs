@@ -18,7 +18,6 @@ public sealed class EntryPoint : GameClient
     [Dependency] private readonly IBaseClient _baseClient = default!;
     [Dependency] private readonly IConfigurationManager _configManager = default!;
     
-    public bool IsSingleplayer = true;
     
     public override void PreInit()
     {
@@ -65,14 +64,6 @@ public sealed class EntryPoint : GameClient
         if (_gameController.LaunchState.FromLauncher) 
             return;
 
-        if (IsSingleplayer)
-        {
-            state.Message("Start singleplayer..");
-            _baseClient.StartSinglePlayer();
-        }
-        else
-        {
-            state.ConnectToLocal();
-        }
+        state.ConnectToLocal();
     }
 }
