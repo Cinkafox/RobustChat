@@ -19,3 +19,19 @@ public sealed class ChatClientServerMessage : NetMessage
         buffer.Write(Message);
     }
 }
+
+public sealed class ChatClientServerSelectChannelMessage : NetMessage
+{
+    public override MsgGroups MsgGroup => MsgGroups.Command;
+    public NetEntity Channel;
+    
+    public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer)
+    {
+        Channel = buffer.ReadNetEntity();
+    }
+
+    public override void WriteToBuffer(NetOutgoingMessage buffer, IRobustSerializer serializer)
+    {
+        buffer.Write(Channel);
+    }
+}

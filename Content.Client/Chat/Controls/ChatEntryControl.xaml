@@ -1,16 +1,12 @@
 <BoxContainer
     xmlns="https://spacestation14.io"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
-    Orientation="Horizontal" 
+    Orientation="Vertical" 
     HorizontalExpand="True"
     SeparationOverride="5">
-    <TextureRect Name="AvatarIcon" RectClipContent="True" MinSize="22 22"/>
-    <BoxContainer Orientation="Vertical" SeparationOverride="5">
-        <BoxContainer Orientation="Horizontal" SeparationOverride="5">
-            <RichTextLabel Name="Nickname"/>
-            <RichTextLabel Name="ChatEntryInfo"/>
-        </BoxContainer>
-        <RichTextLabel Name="MessageField"/>
+    <BoxContainer Orientation="Horizontal" SeparationOverride="5">
+        <RichTextLabel Name="Nickname"/>
+        <RichTextLabel Name="ChatEntryInfo"/>
     </BoxContainer>
+    <RichTextLabel Name="MessageField"/>
 </BoxContainer>

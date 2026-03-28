@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Shared.Chat;
 using Robust.Server.GameObjects;
 using Robust.Shared.Map.Components;
@@ -17,6 +18,37 @@ public sealed class ChannelSystem : EntitySystem
     {
         base.Initialize();
         _netManager.RegisterNetMessage<ChatClientServerMessage>(OnMessageResieved);
+        _netManager.RegisterNetMessage<ChatClientServerSelectChannelMessage>(OnSelectedChannel);
+    }
+
+    private void OnSelectedChannel(ChatClientServerSelectChannelMessage message)
+    {
+        // TODO: ADD VALIDATION LATER
+        
+        var session = _playerManager.GetSessionByChannel(message.MsgChannel);
+
+        if (session.AttachedEntity is null)
+        {
+            Log.Error("Unhandled session " + session.Name);
+            return;
+        }
+        
+        SetChannel(session.AttachedEntity.Value, GetEntity(message.Channel));
+    }
+
+    public void SendUserChannels(EntityUid userId)
+    {
+        var query = EntityQueryEnumerator<ChatChannelComponent>();
+        var ev = new ChannelListEvent();
+        var channels = new List<NetEntity>();
+        
+        while (query.MoveNext(out var uid, out var chatChannelComponent))
+        {
+            channels.Add(GetNetEntity(uid));
+        }
+        
+        ev.AvailableChannels = channels.ToArray();
+        RaiseNetworkEvent(ev, userId);
     }
 
     private void OnMessageResieved(ChatClientServerMessage message)
@@ -30,7 +62,6 @@ public sealed class ChannelSystem : EntitySystem
         }
 
         var currChannel = Transform(session.AttachedEntity.Value).ParentUid;
-        
         SendMessage(currChannel, session.AttachedEntity.Value, message.Message);
     }
 

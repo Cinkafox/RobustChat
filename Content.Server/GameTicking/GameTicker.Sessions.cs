@@ -20,6 +20,7 @@ public partial class GameTicker
             _usersCache[session.UserId] = userId;
             
             _playerManager.SetAttachedEntity(session, userId);
+            _channelSystem.SendUserChannels(userId);
             _channelSystem.SetChannel(userId, DefaultChannel);
             Dirty(userId, comp);
         }

@@ -1,27 +1,30 @@
 ﻿<lobby:LobbyUI 
     xmlns="https://spacestation14.io"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
     xmlns:lobby="clr-namespace:Content.Client.Lobby">
     <PanelContainer Name="RootContainer" HorizontalExpand="True" VerticalExpand="True" StyleClasses="main-background">
-        <BoxContainer Orientation="Vertical" Margin="15" HorizontalExpand="True" VerticalExpand="True">
-            <ScrollContainer VerticalExpand="True">
-                <BoxContainer Orientation="Vertical" SeparationOverride="5" VerticalExpand="True" Name="ChatBox"/>
-            </ScrollContainer>
+        <BoxContainer Margin="15" Orientation="Horizontal">
+            <BoxContainer MinWidth="100" VerticalExpand="True" Orientation="Vertical">
+                <ScrollContainer VerticalExpand="True">
+                    <BoxContainer SeparationOverride="5" Margin="0 5 5 5" VerticalExpand="True" Orientation="Vertical" Name="ChatSelectContainer"/>
+                </ScrollContainer>
+                <PanelContainer SetHeight="2" StyleClasses="background-white"/>
+                <BoxContainer Orientation="Horizontal">
+                    <Label Margin="15 0 5 0" Name="CurrentUserLabel" Text="Loading..."/>
+                </BoxContainer>
+            </BoxContainer>
             
-            <PanelContainer HorizontalExpand="True" SetHeight="2" StyleClasses="background-white"/>
+            <PanelContainer SetWidth="2" StyleClasses="background-white" />
+            <BoxContainer Orientation="Vertical"  HorizontalExpand="True" VerticalExpand="True">
+                <ScrollContainer VerticalExpand="True">
+                    <BoxContainer Margin="5 5 5 5" Orientation="Vertical" SeparationOverride="5" VerticalExpand="True" Name="ChatBox"/>
+                </ScrollContainer>
             
-            <BoxContainer HorizontalExpand="True"  Margin="5 5 5 0" SeparationOverride="5" Orientation="Horizontal">
-                <TextureRect RectClipContent="True"
-                             MinSize="16 16" VerticalAlignment="Center"
-                             TexturePath="/Textures/default_icon.png"/>
-                
-                <Label Margin="15 0 5 0" Name="CurrentUserLabel" Text="Loading..."/>
-                
-                <PanelContainer SetWidth="2" StyleClasses="background-white" />
-                
-                <LineEdit Name="TextField" HorizontalExpand="True"/>
-                <Button Text="Send" Name="SendButton"/>
+                <PanelContainer SetHeight="2" StyleClasses="background-white"/>
+                <BoxContainer HorizontalExpand="True"  Margin="5 5 5 0" SeparationOverride="5" Orientation="Horizontal">
+                    <LineEdit Name="TextField" HorizontalExpand="True"/>
+                    <Button Text="Send" Name="SendButton"/>
+                </BoxContainer>
             </BoxContainer>
         </BoxContainer>
     </PanelContainer>

@@ -36,3 +36,43 @@
         valueType: Robust.Client.Graphics.StyleBoxFlat
         value:
           backgroundColor: "#222222"
+    ContainerButton.chat-select:normal:
+      stylebox:
+        valueType: Robust.Client.Graphics.StyleBoxFlat
+        value:
+          contentMarginLeftOverride: 10
+          contentMarginTopOverride: 8
+          contentMarginBottomOverride: 8
+          backgroundColor: "#111111"
+          borderThickness: 8,0,0,0
+          borderColor: "#aaaaaa"
+    ContainerButton.chat-select:hover:
+      stylebox:
+        valueType: Robust.Client.Graphics.StyleBoxFlat
+        value:
+          contentMarginLeftOverride: 8
+          contentMarginTopOverride: 8
+          contentMarginBottomOverride: 8
+          backgroundColor: "#111111"
+          borderThickness: 5,0,0,0
+          borderColor: "#aaaaaa"
+    ContainerButton.chat-select:pressed:
+      stylebox:
+        valueType: Robust.Client.Graphics.StyleBoxFlat
+        value:
+          contentMarginLeftOverride: 8
+          contentMarginTopOverride: 8
+          contentMarginBottomOverride: 8
+          backgroundColor: "#222222"
+          borderThickness: 5,0,0,0
+          borderColor: "#aaaaaa"      
+    ContainerButton.chat-select:disabled:
+      stylebox:
+        valueType: Robust.Client.Graphics.StyleBoxFlat
+        value:
+          contentMarginLeftOverride: 8
+          contentMarginTopOverride: 8
+          contentMarginBottomOverride: 8
+          backgroundColor: "#222222"
+          borderThickness: 5,0,0,0
+          borderColor: "#aaaaaa"     

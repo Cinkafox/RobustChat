@@ -30,6 +30,8 @@ public sealed partial class GameTicker : EntitySystem
     public void PostInitialize()
     {
         DefaultChannel = _channelSystem.CreateChannel("default");
+        _channelSystem.CreateChannel("Блядушник вайд дрима");
+        _channelSystem.CreateChannel("Слитые фото боича");
     }
 
     private void OnPlayerStatusChanged(object? sender, SessionStatusEventArgs args)

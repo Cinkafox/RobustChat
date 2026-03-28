@@ -15,6 +15,15 @@ public sealed class ChatSystem : EntitySystem
     {
         base.Initialize();
         _netManager.RegisterNetMessage<ChatClientServerMessage>();
+        _netManager.RegisterNetMessage<ChatClientServerSelectChannelMessage>();
+    }
+
+    public void SendSelectedChannel(EntityUid channel)
+    {
+        _netManager.ClientSendMessage(new ChatClientServerSelectChannelMessage()
+        {
+            Channel = GetNetEntity(channel)
+        });
     }
 
     public void Send(string message)

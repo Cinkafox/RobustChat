@@ -20,8 +20,6 @@ public sealed partial class ChatEntryControl : BoxContainer
             Nickname.SetMessage(formattedMessage);
         else
             Nickname.Text = userComponent.UserName;
-        
-        AvatarIcon.TexturePath = "/Textures/default_icon.png";
     }
 
     public void SetMessage(ChatEntry message)

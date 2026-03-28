@@ -17,6 +17,7 @@ public sealed partial class LobbyUI : UIScreen, IChatHandler
     [Dependency] private readonly IEntityManager _entityManager = default!;
     
     private SortedDictionary<DateTime, ChatEntry> _chatEntries = new();
+    private readonly List<(Button, Action<BaseButton.ButtonEventArgs>)> _channelListBtns = [];
     
     public LobbyUI()
     {
@@ -30,6 +31,48 @@ public sealed partial class LobbyUI : UIScreen, IChatHandler
     {
         _entitySystemManager.GetEntitySystem<ChatSystem>().Send(TextField.Text);
         TextField.Clear();
+    }
+
+    private BaseButton? _selectedButton;
+
+    public void SetListChannels(IEnumerable<EntityUid> channels)
+    {
+        foreach (var (btn,ev) in _channelListBtns)
+        {
+            btn.OnPressed -= ev;
+        }
+        
+        ChatSelectContainer.Children.Clear();
+        
+        foreach (var channel in channels)
+        {
+            if (!_entityManager.TryGetComponent<ChatChannelComponent>(channel, out var channelComponent))
+            {
+                Log.Error($"Channel {channel} not found");
+                continue;
+            }
+
+            Action<BaseButton.ButtonEventArgs> action = btn =>
+            {
+                if(btn.Button.Equals(_selectedButton)) 
+                    return;
+                
+                _entitySystemManager.GetEntitySystem<ChatSystem>().SendSelectedChannel(channel);
+
+                _selectedButton?.Disabled = false;
+                _selectedButton = btn.Button;
+                _selectedButton.Disabled = true;
+            };
+
+            var btn = new Button()
+            {
+                Text = channelComponent.ChannelName, StyleClasses = { "chat-select" }
+            };
+            btn.OnPressed += action;
+            
+            _channelListBtns.Add((btn, action));
+            ChatSelectContainer.AddChild(btn);
+        }
     }
     
     public void AddMessage(ChatEntry chatEntry)
@@ -70,6 +113,6 @@ public sealed partial class LobbyUI : UIScreen, IChatHandler
 
     public void SetLocalUsername(string name)
     {
-        CurrentUserLabel.Text = name;
+        CurrentUserLabel.Text = "Hello," + name;
     }
 }
