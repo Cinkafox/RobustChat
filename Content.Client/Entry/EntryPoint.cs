@@ -1,9 +1,12 @@
 ﻿using Content.Client.Connection;
 using Content.Shared.Input;
+using Content.StyleSheetify.Client.StyleSheet;
 using Robust.Client;
 using Robust.Client.Input;
+using Robust.Client.ResourceManagement;
 using Robust.Client.State;
 using Robust.Client.UserInterface;
+using Robust.Client.UserInterface.Stylesheets;
 using Robust.Shared.Configuration;
 using Robust.Shared.ContentPack;
 
@@ -17,6 +20,8 @@ public sealed class EntryPoint : GameClient
     [Dependency] private readonly IGameController _gameController = default!;
     [Dependency] private readonly IBaseClient _baseClient = default!;
     [Dependency] private readonly IConfigurationManager _configManager = default!;
+    [Dependency] private readonly IContentStyleSheetManager _contentStyleSheetManager = default!;
+    [Dependency] private readonly IResourceCache _resourceManager = default!;
     
     
     public override void PreInit()
@@ -34,7 +39,10 @@ public sealed class EntryPoint : GameClient
     
     public override void PostInit()
     { 
-        _userInterfaceManager.SetDefaultTheme("DefaultTheme"); 
+        _userInterfaceManager.SetDefaultTheme("DefaultTheme");
+        _userInterfaceManager.Stylesheet = _contentStyleSheetManager.MergeStyles(
+            new DefaultStylesheet(_resourceManager, _userInterfaceManager).Stylesheet,
+            "default");
        
         ContentContexts.SetupContexts(_inputManager.Contexts);
         _userInterfaceManager.MainViewport.Visible = false;

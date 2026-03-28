@@ -6,4 +6,5 @@ namespace Content.Shared.Chat;
 public sealed partial class ChatChannelComponent: Component
 {
     [DataField, AutoNetworkedField] public string ChannelName;
+    [DataField] public List<ChatEntry> ChatEntries = [];
 }

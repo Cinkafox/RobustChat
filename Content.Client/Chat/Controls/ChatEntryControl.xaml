@@ -7,7 +7,10 @@
     SeparationOverride="5">
     <TextureRect Name="AvatarIcon" RectClipContent="True" MinSize="22 22"/>
     <BoxContainer Orientation="Vertical" SeparationOverride="5">
-        <RichTextLabel Name="Nickname"/>
+        <BoxContainer Orientation="Horizontal" SeparationOverride="5">
+            <RichTextLabel Name="Nickname"/>
+            <RichTextLabel Name="ChatEntryInfo"/>
+        </BoxContainer>
         <RichTextLabel Name="MessageField"/>
     </BoxContainer>
 </BoxContainer>

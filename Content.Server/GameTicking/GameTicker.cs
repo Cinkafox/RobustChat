@@ -45,6 +45,9 @@ public sealed partial class GameTicker : EntitySystem
             case SessionStatus.InGame:
                 AddSession(session);
                 break;
+            case SessionStatus.Disconnected:
+                RemoveSession(session);
+                break;
         }
     }
 }

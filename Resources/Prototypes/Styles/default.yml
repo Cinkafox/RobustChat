@@ -1,0 +1,38 @@
+- type: dynamicValue
+  id: notoSansFont12
+  value:
+    valueType: Content.StyleSheetify.Client.Font.FontSpecifier
+    value:
+      font:
+        - "/Fonts/NotoSans/NotoSans-Regular.ttf"
+      size: 12
+
+- type: dynamicValue
+  id: notoSansMono12
+  value:
+    valueType: Content.StyleSheetify.Client.Font.FontSpecifier
+    value:
+      font:
+        - "/Fonts/NotoSans/NotoSans-Regular.ttf"
+      size: 12
+
+- type: styleSheet
+  id: default
+  typeDefinition:
+    ContainerButton: "Robust.Client.UserInterface.Controls.ContainerButton"
+  styles:
+    .monospace:
+      font: notoSansMono12
+    "":
+      font: notoSansFont12
+      font-color: "#ffffff"
+    .background-white:
+      panel:
+        valueType: Robust.Client.Graphics.StyleBoxFlat
+        value:
+          backgroundColor: "#FFFFFF"
+    .main-background:
+      panel:
+        valueType: Robust.Client.Graphics.StyleBoxFlat
+        value:
+          backgroundColor: "#222222"

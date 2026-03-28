@@ -1,6 +1,5 @@
 using Content.Shared.Chat;
 using Robust.Server.GameObjects;
-using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
@@ -50,6 +49,11 @@ public sealed class ChannelSystem : EntitySystem
             throw new Exception();
         
         _transformSystem.SetParent(entityUid, channel);
+        
+        RaiseNetworkEvent(new ChatSendEvent()
+        {
+            Entries = channel.Comp.ChatEntries.ToArray(), ClearRequired = true
+        }, entityUid);
     }
     
     public void SendMessage(Entity<ChatChannelComponent?, MapComponent?> channel, EntityUid? userId, string message)
@@ -59,10 +63,19 @@ public sealed class ChannelSystem : EntitySystem
             Log.Error("Unhandled channel!");
             return;
         }
+
+        var entry = new ChatEntry()
+        {
+            Message = message,
+            Sender = GetNetEntity(userId),
+            SendTime = DateTime.Now
+        };
+        
+        channel.Comp1.ChatEntries.Add(entry);
         
         RaiseNetworkEvent(new ChatSendEvent()
         {
-            Message = message, Sender = GetNetEntity(userId) 
+            Entries = [entry]
         }, Filter.BroadcastMap(channel.Comp2.MapId));
     }
 }

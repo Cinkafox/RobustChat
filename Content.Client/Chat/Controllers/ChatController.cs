@@ -1,36 +1,59 @@
 using Content.Shared.Chat;
-using Robust.Client.UserInterface;
+using Robust.Client.Player;
 using Robust.Client.UserInterface.Controllers;
+using Robust.Shared.Player;
 
 namespace Content.Client.Chat.Controllers;
 
 public sealed class ChatController : UIController, IChatHandler
 {
-    [UISystemDependency] private readonly ChatSystem _chatSystem = default!;
+    [Dependency] private readonly IPlayerManager _playerManager = default!;
 
-    public List<IChatHandler> Handlers = new List<IChatHandler>();
+    private readonly List<IChatHandler> _handlers = new();
+
+    public override void Initialize()
+    {
+        EntityManager.EventBus.SubscribeLocalEvent<UserComponent, PlayerAttachedEvent>(OnAttached);
+        SubscribeNetworkEvent<ChatSendEvent>(OnChatSend);
+    }
+    
+    private void OnAttached(EntityUid uid, UserComponent component, PlayerAttachedEvent args)
+    {
+        if(!args.Player.Equals(_playerManager.LocalSession)) return;
+        
+        SetLocalUsername(component.UserName);
+    }
+    
+    private void OnChatSend(ChatSendEvent ev, EntitySessionEventArgs args)
+    {
+        if(ev.ClearRequired) Clear();
+        foreach (var chatEntry in ev.Entries)
+        {
+            AddMessage(chatEntry);
+        }
+    }
     
     public void RegisterChatHandler(IChatHandler chatHandler)
     {
-        Handlers.Add(chatHandler);
+        _handlers.Add(chatHandler);
     }
 
     public void UnregisterChatHandler(IChatHandler chatHandler)
     {
-        Handlers.Remove(chatHandler);
+        _handlers.Remove(chatHandler);
     }
 
-    public void AddMessage(UserComponent component, string message)
+    public void AddMessage(ChatEntry message)
     {
-        foreach (var handler in Handlers)
+        foreach (var handler in _handlers)
         {
-            handler.AddMessage(component, message);
+            handler.AddMessage(message);
         }
     }
 
     public void Clear()
     {
-        foreach (var handler in Handlers)
+        foreach (var handler in _handlers)
         {
             handler.Clear();
         }
@@ -38,7 +61,7 @@ public sealed class ChatController : UIController, IChatHandler
 
     public void SetLocalUsername(string name)
     {
-        foreach (var handler in Handlers)
+        foreach (var handler in _handlers)
         {
             handler.SetLocalUsername(name);
         }
@@ -48,7 +71,7 @@ public sealed class ChatController : UIController, IChatHandler
 
 public interface IChatHandler
 {
-    public void AddMessage(UserComponent component, string message);
+    public void AddMessage(ChatEntry message);
     public void Clear();
     public void SetLocalUsername(string name);
 }

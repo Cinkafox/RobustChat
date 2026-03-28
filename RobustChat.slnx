@@ -32,8 +32,13 @@
     <Project Path="RobustToolbox/XamlX/src/XamlX.IL.Cecil/XamlX.IL.Cecil.csproj" />
     <Project Path="RobustToolbox/XamlX/src/XamlX/XamlX.csproj" />
   </Folder>
+  <Folder Name="/StyleSheetify/">
+    <Project Path="StyleSheetify/Content.StyleSheetify.Client/Content.StyleSheetify.Client.csproj" />
+    <Project Path="StyleSheetify/Content.StyleSheetify.Server/Content.StyleSheetify.Server.csproj" />
+    <Project Path="StyleSheetify/Content.StyleSheetify.Shared/Content.StyleSheetify.Shared.csproj" />
+  </Folder>
   <Project Path="Content.Client\Content.Client.csproj" />
-  <Project Path="Content.Packaging\Content.Packaging.csproj" Type="Classic C#">
+  <Project Path="Content.Packaging\Content.Packaging.csproj">
     <Configuration Solution="DebugOpt|Any CPU" Project="Debug|Any CPU" />
     <Configuration Solution="Tools|Any CPU" Project="Debug|Any CPU" />
   </Project>

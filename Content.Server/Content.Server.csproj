@@ -27,5 +27,6 @@
     <ItemGroup>
         <ProjectReference Include="..\Content.Shared\Content.Shared.csproj" />
         <ProjectReference Include="..\Content.Packaging\Content.Packaging.csproj" />
+        <ProjectReference Include="..\StyleSheetify\Content.StyleSheetify.Server\Content.StyleSheetify.Server.csproj" />
     </ItemGroup>
 </Project>

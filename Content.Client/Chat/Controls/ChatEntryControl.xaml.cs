@@ -7,9 +7,9 @@ using Robust.Shared.Utility;
 namespace Content.Client.Chat.Controls;
 
 [GenerateTypedNameReferences]
-public sealed partial class ChatEntry : BoxContainer
+public sealed partial class ChatEntryControl : BoxContainer
 {
-    public ChatEntry()
+    public ChatEntryControl()
     {
         RobustXamlLoader.Load(this);
     }
@@ -17,26 +17,20 @@ public sealed partial class ChatEntry : BoxContainer
     public void SetUser(UserComponent userComponent)
     {
         if (FormattedMessage.TryFromMarkup($"[color=#777777][bold]{userComponent.UserName}[/bold][color]", out var formattedMessage))
-        {
             Nickname.SetMessage(formattedMessage);
-        }
         else
-        {
             Nickname.Text = userComponent.UserName;
-        }
         
         AvatarIcon.TexturePath = "/Textures/default_icon.png";
     }
 
-    public void SetMessage(string message)
+    public void SetMessage(ChatEntry message)
     {
-        if (FormattedMessage.TryFromMarkup(message, out var formattedMessage))
-        {
+        if (FormattedMessage.TryFromMarkup(message.Message, out var formattedMessage))
             MessageField.SetMessage(formattedMessage);
-        }
         else
-        {
-            MessageField.Text = message;
-        }
+            MessageField.Text = message.Message;
+        
+        ChatEntryInfo.SetMessage(FormattedMessage.FromMarkupOrThrow($"[color=#555555]{message.SendTime}[/color]"));
     }
 }
