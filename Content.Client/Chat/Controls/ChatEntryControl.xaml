@@ -9,5 +9,5 @@
         <RichTextLabel VerticalExpand="True" Name="ChatEntryInfo"/>
     </BoxContainer>
     <RichTextLabel Name="MessageField"/>
-    <BoxContainer Name="FileContainer"/>
+    <BoxContainer Margin="10 0 10 0" Name="FileContainer"/>
 </BoxContainer>

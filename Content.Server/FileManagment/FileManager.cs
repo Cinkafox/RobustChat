@@ -1,4 +1,5 @@
-using System.Collections;
+using System.IO;
+using System.IO.Compression;
 using System.Security.Cryptography;
 using Content.Shared.ContentDependencies;
 using Content.Shared.FileManagment;
@@ -11,9 +12,10 @@ public sealed class FileManager : IInitializable
 {
     [Dependency] private readonly INetManager _netManager = default!;
     
-    private Dictionary<FileId, byte[]> _files = [];
-    private FileIdPool _fileIdPool = new();
+    private readonly Dictionary<FileId, byte[]> _files = [];
+    private readonly FileIdPool _fileIdPool = new();
     private readonly Dictionary<byte[], FileId> _contentHashToId = new();
+    private readonly Dictionary<FileId, byte[]> _contentIdToHash = new();
     
     public void Initialize(IDependencyCollection collection)
     {
@@ -35,25 +37,34 @@ public sealed class FileManager : IInitializable
 
     public FileId AddFile(byte[] data)
     {
-        byte[] hash = SHA256.HashData(data);
+        var hash = SHA256.HashData(data);
         
         if (_contentHashToId.TryGetValue(hash, out var existingId))
-        {
             return existingId;
-        }
-        
+            
+        using var outputStream = new MemoryStream();
+        using (var compressor = new DeflateStream(outputStream, CompressionLevel.Optimal, leaveOpen: true))
+        {
+            compressor.Write(data, 0, data.Length);
+        } 
+            
+        var compressedData = outputStream.ToArray();
         var file = _fileIdPool.Take();
-        _files[file] = data;
+        
+        _files[file] = compressedData;
         _contentHashToId[hash] = file;
+        _contentIdToHash[file] = hash;
+        
         return file;
     }
 
     public void RemoveFile(FileId file)
     {
-        if(!_files.TryGetValue(file, out var data))
+        if(!_contentIdToHash.TryGetValue(file, out var hash))
             return;
         
-        _contentHashToId.Remove(SHA256.HashData(data));
+        _contentHashToId.Remove(hash);
+        _contentIdToHash.Remove(file);
         _files.Remove(file);
         _fileIdPool.Return(file);
     }

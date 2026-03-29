@@ -37,6 +37,9 @@ public sealed class ChatSystem : EntitySystem
 
     public void Send(string message)
     {
+        if(string.IsNullOrEmpty(message)) 
+            return;
+        
         _netManager.ClientSendMessage(new ChatClientServerMessage()
         {
             Message = message

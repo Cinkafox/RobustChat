@@ -4,7 +4,7 @@
     xmlns:lobby="clr-namespace:Content.Client.Lobby">
     <PanelContainer Name="RootContainer" HorizontalExpand="True" VerticalExpand="True" StyleClasses="main-background">
         <BoxContainer Margin="15" Orientation="Horizontal">
-            <BoxContainer SetWidth="100" VerticalExpand="True" Orientation="Vertical">
+            <BoxContainer SetWidth="250" VerticalExpand="True" Orientation="Vertical">
                 <ScrollContainer HScrollEnabled="False" VerticalExpand="True">
                     <BoxContainer SeparationOverride="5" Margin="0 5 5 5" VerticalExpand="True" Orientation="Vertical" Name="ChatSelectContainer"/>
                 </ScrollContainer>

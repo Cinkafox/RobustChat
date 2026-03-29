@@ -100,8 +100,7 @@ public sealed partial class LobbyUI : UIScreen, IChatHandler
         ChatBox.Children.Clear();
         ChatEntry? lastEntry = null;
 
-        var doScroll = Math.Abs(ChatScrollContainer.VScroll - MaxScroll) < 6;
-        
+        var doScroll = Math.Abs(ChatScrollContainer.VScroll - MaxScroll) < 10;
         foreach (var entry in _chatEntries)
         {
             AddMessageInternal(entry.Value, lastEntry);
@@ -112,7 +111,7 @@ public sealed partial class LobbyUI : UIScreen, IChatHandler
         {
             Timer.Spawn(1, () =>
             {
-                ChatScrollContainer.VScroll = float.MaxValue;
+                ChatScrollContainer.VScroll = MaxScroll;
             });
         }
     }

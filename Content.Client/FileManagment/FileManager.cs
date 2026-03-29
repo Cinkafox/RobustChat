@@ -1,3 +1,5 @@
+using System.IO;
+using System.IO.Compression;
 using Content.Shared.ContentDependencies;
 using Content.Shared.FileManagment;
 using Robust.Shared.Network;
@@ -22,17 +24,33 @@ public sealed class FileManager : IInitializable
 
     private void OnResponse(FileServerFileResponseMessage message)
     {
-        if (message.Data.Length != 0)
-            _files[message.File] = message.Data;
-        
         _pendingFiles.Remove(message.File);
-
-        if (_callbacks.TryGetValue(message.File, out var callback))
+        if (!_callbacks.TryGetValue(message.File, out var callback)) return;
+        
+        if (message.Data.Length == 0)
         {
             while (callback.TryDequeue(out var action))
             {
-                action(message.Data);
+                action([]);
             }
+            return;
+        }
+        
+        using var inputStream = new MemoryStream(message.Data);
+        using var outputStream = new MemoryStream();
+        
+        using (var decompressor = new DeflateStream(inputStream, CompressionMode.Decompress, leaveOpen: true))
+        {
+            decompressor.CopyTo(outputStream);
+        }
+        
+        var decompressed = outputStream.ToArray();
+            
+        _files[message.File] = decompressed;
+        
+        while (callback.TryDequeue(out var action))
+        {
+            action(decompressed);
         }
     }
 
