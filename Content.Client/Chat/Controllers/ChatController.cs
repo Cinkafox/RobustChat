@@ -43,10 +43,7 @@ public sealed class ChatController : UIController, IChatHandler
             SetChannel(_currentChannel);
         }
         
-        foreach (var chatEntry in ev.Entries)
-        {
-            AddMessage(chatEntry);
-        }
+        AddMessage(ev.Entries);
     }
     
     public void RegisterChatHandler(IChatHandler chatHandler)
@@ -68,7 +65,7 @@ public sealed class ChatController : UIController, IChatHandler
         }
     }
 
-    public void AddMessage(ChatEntry message)
+    public void AddMessage(ChatEntry[] message)
     {
         foreach (var handler in _handlers)
         {
@@ -105,7 +102,7 @@ public sealed class ChatController : UIController, IChatHandler
 public interface IChatHandler
 {
     public void SetListChannels(IEnumerable<EntityUid> channels);
-    public void AddMessage(ChatEntry message);
+    public void AddMessage(params ChatEntry[] messages);
     public void Clear();
     public void SetLocalUsername(string name);
     public void SetChannel(EntityUid channelUid);

@@ -4,9 +4,9 @@
     Orientation="Vertical" 
     HorizontalExpand="True"
     SeparationOverride="5">
-    <BoxContainer Orientation="Horizontal" SeparationOverride="5" Name="ChatInfo">
+    <BoxContainer Orientation="Horizontal" VerticalExpand="True" SeparationOverride="5" Name="ChatInfo">
         <RichTextLabel Name="Nickname"/>
-        <RichTextLabel Name="ChatEntryInfo"/>
+        <RichTextLabel VerticalExpand="True" Name="ChatEntryInfo"/>
     </BoxContainer>
     <RichTextLabel Name="MessageField"/>
     <BoxContainer Name="FileContainer"/>

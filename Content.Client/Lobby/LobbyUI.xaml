@@ -4,8 +4,8 @@
     xmlns:lobby="clr-namespace:Content.Client.Lobby">
     <PanelContainer Name="RootContainer" HorizontalExpand="True" VerticalExpand="True" StyleClasses="main-background">
         <BoxContainer Margin="15" Orientation="Horizontal">
-            <BoxContainer MinWidth="100" VerticalExpand="True" Orientation="Vertical">
-                <ScrollContainer VerticalExpand="True">
+            <BoxContainer SetWidth="100" VerticalExpand="True" Orientation="Vertical">
+                <ScrollContainer HScrollEnabled="False" VerticalExpand="True">
                     <BoxContainer SeparationOverride="5" Margin="0 5 5 5" VerticalExpand="True" Orientation="Vertical" Name="ChatSelectContainer"/>
                 </ScrollContainer>
                 <PanelContainer SetHeight="2" StyleClasses="background-white"/>
@@ -15,8 +15,8 @@
             </BoxContainer>
             
             <PanelContainer SetWidth="2" StyleClasses="background-white" />
-            <BoxContainer Orientation="Vertical"  HorizontalExpand="True" VerticalExpand="True">
-                <ScrollContainer VerticalExpand="True">
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+                <ScrollContainer Name="ChatScrollContainer" HScrollEnabled="False" VerticalExpand="True">
                     <BoxContainer Margin="5 5 5 5" Orientation="Vertical" SeparationOverride="5" VerticalExpand="True" Name="ChatBox"/>
                 </ScrollContainer>
             
