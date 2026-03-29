@@ -1,0 +1,6 @@
+- type: channelGroup
+  id: default
+  channels:
+    - Welcome
+    - Offtop
+    - Cats

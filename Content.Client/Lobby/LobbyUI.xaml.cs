@@ -93,13 +93,15 @@ public sealed partial class LobbyUI : UIScreen, IChatHandler
         _chatEntries.Add(chatEntry.SendTime, chatEntry);
         
         ChatBox.Children.Clear();
+        ChatEntry? lastEntry = null;
         foreach (var entry in _chatEntries)
         {
-            AddMessageInternal(entry.Value);
+            AddMessageInternal(entry.Value, lastEntry);
+            lastEntry = entry.Value;
         }
     }
 
-    private void AddMessageInternal(ChatEntry chatEntry)
+    private void AddMessageInternal(ChatEntry chatEntry, ChatEntry? lastValue)
     {
         if (chatEntry.Sender is not null &&
             _entityManager.TryGetComponent<UserComponent>(_entityManager.GetEntity(chatEntry.Sender.Value),
@@ -108,6 +110,10 @@ public sealed partial class LobbyUI : UIScreen, IChatHandler
             var entry = new ChatEntryControl();
             entry.SetUser(userComponent);
             entry.SetMessage(chatEntry);
+            
+            if(lastValue != null && lastValue.Sender.Equals(chatEntry.Sender))
+                entry.HideChatInfo();
+            
             ChatBox.Children.Add(entry);
         }
         else

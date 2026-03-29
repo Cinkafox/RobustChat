@@ -1,8 +1,10 @@
 ﻿using Content.Server.Chat;
+using Content.Shared.Chat;
 using Robust.Server.Console;
 using Robust.Shared.Console;
 using Robust.Shared.Enums;
 using Robust.Shared.Player;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Robust.Shared.Toolshed;
 using Robust.Shared.Toolshed.Errors;
@@ -15,6 +17,7 @@ public sealed partial class GameTicker : EntitySystem
     [Dependency] private readonly IConGroupController _groupController = default!;
     [Dependency] private readonly ChannelSystem _channelSystem = default!;
     [Dependency] private readonly ISharedPlayerManager _playerManager = default!;
+    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
 
     public ContentGroupController GroupController = new ContentGroupController();
 
@@ -29,9 +32,14 @@ public sealed partial class GameTicker : EntitySystem
 
     public void PostInitialize()
     {
-        DefaultChannel = _channelSystem.CreateChannel("default");
-        _channelSystem.CreateChannel("Блядушник вайд дрима");
-        _channelSystem.CreateChannel("Слитые фото боича");
+        var channels = new Queue<string>(_prototypeManager.Index<ChannelGroupPrototype>("default").Channels);
+        
+        DefaultChannel = _channelSystem.CreateChannel(channels.Dequeue());
+
+        while (channels.TryDequeue(out var  channel))
+        {
+            _channelSystem.CreateChannel(channel);
+        }
     }
 
     private void OnPlayerStatusChanged(object? sender, SessionStatusEventArgs args)

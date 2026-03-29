@@ -29,6 +29,11 @@ public sealed partial class ChatEntryControl : BoxContainer
             Nickname.Text = userComponent.UserName;
     }
 
+    public void HideChatInfo()
+    {
+        ChatInfo.Visible = false;
+    }
+
     public void SetMessage(ChatEntry message)
     {
         ChatEntryInfo.SetMessage(FormattedMessage.FromMarkupOrThrow($"[color=#555555]{message.SendTime}[/color]"));
