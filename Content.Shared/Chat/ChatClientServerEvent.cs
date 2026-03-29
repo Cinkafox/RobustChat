@@ -35,3 +35,21 @@ public sealed class ChatClientServerSelectChannelMessage : NetMessage
         buffer.Write(Channel);
     }
 }
+
+public sealed class ChatClientServerSendFileMessage : NetMessage
+{
+    public override MsgGroups MsgGroup => MsgGroups.Command;
+    public byte[] File = [];
+    
+    public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer)
+    {
+        File = new byte[buffer.ReadInt32()];
+        buffer.ReadBytes(File);
+    }
+
+    public override void WriteToBuffer(NetOutgoingMessage buffer, IRobustSerializer serializer)
+    {
+        buffer.Write(File.Length);
+        buffer.Write(File);
+    }
+}

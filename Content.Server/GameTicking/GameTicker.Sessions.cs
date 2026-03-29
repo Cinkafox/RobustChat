@@ -25,7 +25,7 @@ public partial class GameTicker
             Dirty(userId, comp);
         }
         
-        _channelSystem.SendMessage(DefaultChannel, null, "Connected to the server! " + comp.UserName);
+        _channelSystem.SendMessage(DefaultChannel, null, "Connected to the server! " + comp.UserName, null);
     }
 
     private void RemoveSession(ICommonSession session)
@@ -34,6 +34,6 @@ public partial class GameTicker
            !TryComp<UserComponent>(user, out var userComp)) 
             return;
         
-        _channelSystem.SendMessage(DefaultChannel, null, "Disconnected from the server! " + userComp.UserName);
+        _channelSystem.SendMessage(DefaultChannel, null, "Disconnected from the server! " + userComp.UserName, null);
     }
 }

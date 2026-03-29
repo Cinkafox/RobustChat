@@ -16,6 +16,15 @@ public sealed class ChatSystem : EntitySystem
         base.Initialize();
         _netManager.RegisterNetMessage<ChatClientServerMessage>();
         _netManager.RegisterNetMessage<ChatClientServerSelectChannelMessage>();
+        _netManager.RegisterNetMessage<ChatClientServerSendFileMessage>();
+    }
+
+    public void SendFile(byte[] file)
+    {
+        _netManager.ClientSendMessage(new ChatClientServerSendFileMessage()
+        {
+            File = file
+        });
     }
 
     public void SendSelectedChannel(EntityUid channel)

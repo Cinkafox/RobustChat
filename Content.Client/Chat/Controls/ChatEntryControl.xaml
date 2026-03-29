@@ -9,4 +9,5 @@
         <RichTextLabel Name="ChatEntryInfo"/>
     </BoxContainer>
     <RichTextLabel Name="MessageField"/>
+    <BoxContainer Name="FileContainer"/>
 </BoxContainer>

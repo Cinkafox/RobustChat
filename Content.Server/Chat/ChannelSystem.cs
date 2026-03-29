@@ -1,5 +1,6 @@
-using System.Linq;
+using Content.Server.FileManagment;
 using Content.Shared.Chat;
+using Content.Shared.FileManagment;
 using Robust.Server.GameObjects;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Network;
@@ -13,27 +14,57 @@ public sealed class ChannelSystem : EntitySystem
     [Dependency] private readonly TransformSystem _transformSystem = default!;
     [Dependency] private readonly INetManager _netManager = default!;
     [Dependency] private readonly ISharedPlayerManager _playerManager = default!;
+    [Dependency] private readonly FileManager _fileManager = default!;
 
     public override void Initialize()
     {
         base.Initialize();
         _netManager.RegisterNetMessage<ChatClientServerMessage>(OnMessageResieved);
         _netManager.RegisterNetMessage<ChatClientServerSelectChannelMessage>(OnSelectedChannel);
+        _netManager.RegisterNetMessage<ChatClientServerSendFileMessage>(OnSendFile);
+    }
+
+    private void OnSendFile(ChatClientServerSendFileMessage message)
+    {
+        if(!TryGetEntity(message.MsgChannel, out var attachedEnt, out var currChannel)) 
+            return;
+        
+        SendMessage(currChannel, attachedEnt,  null, _fileManager.AddFile(message.File));
     }
 
     private void OnSelectedChannel(ChatClientServerSelectChannelMessage message)
     {
         // TODO: ADD VALIDATION LATER
         
-        var session = _playerManager.GetSessionByChannel(message.MsgChannel);
+        if(!TryGetEntity(message.MsgChannel, out var attachedEnt, out var currChannel)) 
+            return;
+        
+        SetChannel(attachedEnt, GetEntity(message.Channel));
+    }
+    
+    private void OnMessageResieved(ChatClientServerMessage message)
+    {
+        if(!TryGetEntity(message.MsgChannel, out var attachedEnt, out var currChannel)) 
+            return;
+        
+        SendMessage(currChannel, attachedEnt, message.Message, null);
+    }
+
+    private bool TryGetEntity(INetChannel channel, out EntityUid entityUid, out EntityUid channelUid)
+    {
+        var session = _playerManager.GetSessionByChannel(channel);
+        entityUid = default!;
+        channelUid = default!;
 
         if (session.AttachedEntity is null)
         {
             Log.Error("Unhandled session " + session.Name);
-            return;
+            return false;
         }
-        
-        SetChannel(session.AttachedEntity.Value, GetEntity(message.Channel));
+
+        entityUid = session.AttachedEntity.Value;
+        channelUid = Transform(entityUid).ParentUid;
+        return true;
     }
 
     public void SendUserChannels(EntityUid userId)
@@ -49,20 +80,6 @@ public sealed class ChannelSystem : EntitySystem
         
         ev.AvailableChannels = channels.ToArray();
         RaiseNetworkEvent(ev, userId);
-    }
-
-    private void OnMessageResieved(ChatClientServerMessage message)
-    {
-        var session = _playerManager.GetSessionByChannel(message.MsgChannel);
-
-        if (session.AttachedEntity is null)
-        {
-            Log.Error("Unhandled session " + session.Name);
-            return;
-        }
-
-        var currChannel = Transform(session.AttachedEntity.Value).ParentUid;
-        SendMessage(currChannel, session.AttachedEntity.Value, message.Message);
     }
 
     public EntityUid CreateChannel(string name)
@@ -83,11 +100,12 @@ public sealed class ChannelSystem : EntitySystem
         
         RaiseNetworkEvent(new ChatSendEvent()
         {
-            Entries = channel.Comp.ChatEntries.ToArray(), ClearRequired = true
+            Entries = channel.Comp.ChatEntries.ToArray(), 
+            ChannelId = GetNetEntity(channel)
         }, entityUid);
     }
     
-    public void SendMessage(Entity<ChatChannelComponent?, MapComponent?> channel, EntityUid? userId, string message)
+    public void SendMessage(Entity<ChatChannelComponent?, MapComponent?> channel, EntityUid? userId, string? message, FileId? file)
     {
         if (!Resolve(channel.Owner, ref channel.Comp1, ref channel.Comp2))
         {
@@ -98,6 +116,7 @@ public sealed class ChannelSystem : EntitySystem
         var entry = new ChatEntry()
         {
             Message = message,
+            File = file,
             Sender = GetNetEntity(userId),
             SendTime = DateTime.Now
         };
@@ -106,7 +125,8 @@ public sealed class ChannelSystem : EntitySystem
         
         RaiseNetworkEvent(new ChatSendEvent()
         {
-            Entries = [entry]
+            Entries = [entry],
+            ChannelId = GetNetEntity(channel)
         }, Filter.BroadcastMap(channel.Comp2.MapId));
     }
 }

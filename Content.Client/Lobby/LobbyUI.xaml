@@ -9,8 +9,8 @@
                     <BoxContainer SeparationOverride="5" Margin="0 5 5 5" VerticalExpand="True" Orientation="Vertical" Name="ChatSelectContainer"/>
                 </ScrollContainer>
                 <PanelContainer SetHeight="2" StyleClasses="background-white"/>
-                <BoxContainer Orientation="Horizontal">
-                    <Label Margin="15 0 5 0" Name="CurrentUserLabel" Text="Loading..."/>
+                <BoxContainer MinHeight="40" Orientation="Horizontal">
+                    <Label VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5" Name="CurrentUserLabel" Text="Loading..."/>
                 </BoxContainer>
             </BoxContainer>
             
@@ -21,9 +21,10 @@
                 </ScrollContainer>
             
                 <PanelContainer SetHeight="2" StyleClasses="background-white"/>
-                <BoxContainer HorizontalExpand="True"  Margin="5 5 5 0" SeparationOverride="5" Orientation="Horizontal">
+                <BoxContainer MinHeight="35" HorizontalExpand="True"  Margin="5 5 5 0" SeparationOverride="5" Orientation="Horizontal">
                     <LineEdit Name="TextField" HorizontalExpand="True"/>
                     <Button Text="Send" Name="SendButton"/>
+                    <Button Text="Send file" Name="SendFileButton"/>
                 </BoxContainer>
             </BoxContainer>
         </BoxContainer>

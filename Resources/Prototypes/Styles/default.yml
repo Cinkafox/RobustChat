@@ -15,6 +15,28 @@
       font:
         - "/Fonts/NotoSans/NotoSans-Regular.ttf"
       size: 12
+      
+- type: dynamicValue
+  id: buttonSelectChat
+  value:
+    valueType: Robust.Client.Graphics.StyleBoxFlat
+    value:
+      contentMarginLeftOverride: 8
+      contentMarginTopOverride: 8
+      contentMarginBottomOverride: 8
+      backgroundColor: "#111111"
+      borderThickness: 5,0,0,0
+      borderColor: "#aaaaaa"
+
+
+- type: dynamicValue
+  id: buttonSelectChatPushed
+  value:
+    parent: buttonSelectChat
+    valueType: Robust.Client.Graphics.StyleBoxFlat
+    value:
+      backgroundColor: "#222222"
+      borderColor: "#aaaaaa"
 
 - type: styleSheet
   id: default
@@ -38,41 +60,13 @@
           backgroundColor: "#222222"
     ContainerButton.chat-select:normal:
       stylebox:
-        valueType: Robust.Client.Graphics.StyleBoxFlat
+        parent: buttonSelectChat
         value:
           contentMarginLeftOverride: 10
-          contentMarginTopOverride: 8
-          contentMarginBottomOverride: 8
-          backgroundColor: "#111111"
           borderThickness: 8,0,0,0
-          borderColor: "#aaaaaa"
     ContainerButton.chat-select:hover:
-      stylebox:
-        valueType: Robust.Client.Graphics.StyleBoxFlat
-        value:
-          contentMarginLeftOverride: 8
-          contentMarginTopOverride: 8
-          contentMarginBottomOverride: 8
-          backgroundColor: "#111111"
-          borderThickness: 5,0,0,0
-          borderColor: "#aaaaaa"
+      stylebox: buttonSelectChat
     ContainerButton.chat-select:pressed:
-      stylebox:
-        valueType: Robust.Client.Graphics.StyleBoxFlat
-        value:
-          contentMarginLeftOverride: 8
-          contentMarginTopOverride: 8
-          contentMarginBottomOverride: 8
-          backgroundColor: "#222222"
-          borderThickness: 5,0,0,0
-          borderColor: "#aaaaaa"      
+      stylebox: buttonSelectChatPushed  
     ContainerButton.chat-select:disabled:
-      stylebox:
-        valueType: Robust.Client.Graphics.StyleBoxFlat
-        value:
-          contentMarginLeftOverride: 8
-          contentMarginTopOverride: 8
-          contentMarginBottomOverride: 8
-          backgroundColor: "#222222"
-          borderThickness: 5,0,0,0
-          borderColor: "#aaaaaa"     
+      stylebox: buttonSelectChatPushed

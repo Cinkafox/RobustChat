@@ -11,6 +11,8 @@ public sealed class ChatController : UIController, IChatHandler
     [Dependency] private readonly IPlayerManager _playerManager = default!;
 
     private readonly List<IChatHandler> _handlers = new();
+    private EntityUid _currentChannel;
+    
 
     public override void Initialize()
     {
@@ -33,7 +35,14 @@ public sealed class ChatController : UIController, IChatHandler
     
     private void OnChatSend(ChatSendEvent ev, EntitySessionEventArgs args)
     {
-        if(ev.ClearRequired) Clear();
+        var channelEnt = EntityManager.GetEntity(ev.ChannelId);
+        if (_currentChannel != channelEnt)
+        {
+            _currentChannel = channelEnt;
+            Clear();
+            SetChannel(_currentChannel);
+        }
+        
         foreach (var chatEntry in ev.Entries)
         {
             AddMessage(chatEntry);
@@ -82,6 +91,14 @@ public sealed class ChatController : UIController, IChatHandler
             handler.SetLocalUsername(name);
         }
     }
+
+    public void SetChannel(EntityUid channelUid)
+    {
+        foreach (var handler in _handlers)
+        {
+            handler.SetChannel(channelUid);
+        }
+    }
 }
 
 
@@ -91,4 +108,5 @@ public interface IChatHandler
     public void AddMessage(ChatEntry message);
     public void Clear();
     public void SetLocalUsername(string name);
+    public void SetChannel(EntityUid channelUid);
 }
