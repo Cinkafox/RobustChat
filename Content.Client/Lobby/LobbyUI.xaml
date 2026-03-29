@@ -23,8 +23,8 @@
                 <PanelContainer SetHeight="2" StyleClasses="background-white"/>
                 <BoxContainer MinHeight="35" HorizontalExpand="True"  Margin="5 5 5 0" SeparationOverride="5" Orientation="Horizontal">
                     <LineEdit Name="TextField" HorizontalExpand="True"/>
-                    <Button Text="Send" Name="SendButton"/>
-                    <Button Text="Send file" Name="SendFileButton"/>
+                    <Button Text="Send" Name="SendButton" StyleClasses="chat-control-btn"/>
+                    <Button Text="Send file" Name="SendFileButton" StyleClasses="chat-control-btn"/>
                 </BoxContainer>
             </BoxContainer>
         </BoxContainer>

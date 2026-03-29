@@ -44,19 +44,20 @@ public sealed class FileClientServerFileRequiredMessage : NetMessage
 public sealed class FileServerFileResponseMessage : NetMessage
 {
     public override MsgGroups MsgGroup => MsgGroups.Command;
-    public FileId File;
-    public byte[] Data = [];
+    public FileId FileId;
+    public ContentFile Data = default;
     
     public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer)
     {
-        File = new FileId(buffer.ReadInt32());
-        Data = buffer.ReadBytes(buffer.ReadInt32());
+        FileId = new FileId(buffer.ReadInt32());
+        Data = new ContentFile(buffer.ReadString(), buffer.ReadBytes(buffer.ReadInt32()));
     }
 
     public override void WriteToBuffer(NetOutgoingMessage buffer, IRobustSerializer serializer)
     {
-        buffer.Write(File.Id);
+        buffer.Write(FileId.Id);
+        buffer.Write(Data.FullName);
         buffer.Write(Data.Length);
-        buffer.Write(Data);
+        buffer.Write(Data.Data);
     }
 }

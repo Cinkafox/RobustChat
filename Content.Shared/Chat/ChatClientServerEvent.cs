@@ -40,16 +40,19 @@ public sealed class ChatClientServerSendFileMessage : NetMessage
 {
     public override MsgGroups MsgGroup => MsgGroups.Command;
     public byte[] File = [];
+    public string FileName = "";
     
     public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer)
     {
         File = new byte[buffer.ReadInt32()];
+        FileName = buffer.ReadString();
         buffer.ReadBytes(File);
     }
 
     public override void WriteToBuffer(NetOutgoingMessage buffer, IRobustSerializer serializer)
     {
         buffer.Write(File.Length);
+        buffer.Write(FileName);
         buffer.Write(File);
     }
 }

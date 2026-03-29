@@ -12,7 +12,7 @@ public sealed class FileManager : IInitializable
 {
     [Dependency] private readonly INetManager _netManager = default!;
     
-    private readonly Dictionary<FileId, byte[]> _files = [];
+    private readonly Dictionary<FileId, ContentFile> _files = [];
     private readonly FileIdPool _fileIdPool = new();
     private readonly Dictionary<byte[], FileId> _contentHashToId = new();
     private readonly Dictionary<FileId, byte[]> _contentIdToHash = new();
@@ -30,12 +30,12 @@ public sealed class FileManager : IInitializable
         
         message.MsgChannel.SendMessage(new FileServerFileResponseMessage()
         {
-            File = message.File,
-            Data = file ?? []
+            FileId = message.File,
+            Data = file
         });
     }
 
-    public FileId AddFile(byte[] data)
+    public FileId AddFile(string fileName, byte[] data)
     {
         var hash = SHA256.HashData(data);
         
@@ -51,7 +51,7 @@ public sealed class FileManager : IInitializable
         var compressedData = outputStream.ToArray();
         var file = _fileIdPool.Take();
         
-        _files[file] = compressedData;
+        _files[file] = new ContentFile(fileName, compressedData);
         _contentHashToId[hash] = file;
         _contentIdToHash[file] = hash;
         

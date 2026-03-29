@@ -19,11 +19,11 @@ public sealed class ChatSystem : EntitySystem
         _netManager.RegisterNetMessage<ChatClientServerSendFileMessage>();
     }
 
-    public void SendFile(byte[] file)
+    public void SendFile(string fileName, byte[] file)
     {
         _netManager.ClientSendMessage(new ChatClientServerSendFileMessage()
         {
-            File = file
+            File = file, FileName = fileName
         });
     }
 

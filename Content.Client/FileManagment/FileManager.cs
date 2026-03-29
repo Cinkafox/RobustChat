@@ -11,8 +11,8 @@ public sealed class FileManager : IInitializable
 {
     [Dependency] private readonly INetManager _netManager = default!;
     
-    private Dictionary<FileId, byte[]> _files = [];
-    private Dictionary<FileId, Queue<Action<byte[]>>> _callbacks = new();
+    private Dictionary<FileId, ContentFile> _files = [];
+    private Dictionary<FileId, Queue<Action<ContentFile>>> _callbacks = new();
     private readonly HashSet<FileId> _pendingFiles = [];
     
     public void Initialize(IDependencyCollection collection)
@@ -24,19 +24,19 @@ public sealed class FileManager : IInitializable
 
     private void OnResponse(FileServerFileResponseMessage message)
     {
-        _pendingFiles.Remove(message.File);
-        if (!_callbacks.TryGetValue(message.File, out var callback)) return;
+        _pendingFiles.Remove(message.FileId);
+        if (!_callbacks.TryGetValue(message.FileId, out var callback)) return;
         
         if (message.Data.Length == 0)
         {
             while (callback.TryDequeue(out var action))
             {
-                action([]);
+                action(message.Data);
             }
             return;
         }
         
-        using var inputStream = new MemoryStream(message.Data);
+        using var inputStream = new MemoryStream(message.Data.Data);
         using var outputStream = new MemoryStream();
         
         using (var decompressor = new DeflateStream(inputStream, CompressionMode.Decompress, leaveOpen: true))
@@ -44,9 +44,9 @@ public sealed class FileManager : IInitializable
             decompressor.CopyTo(outputStream);
         }
         
-        var decompressed = outputStream.ToArray();
+        var decompressed = new ContentFile(message.Data.Name, message.Data.Extension, outputStream.ToArray());
             
-        _files[message.File] = decompressed;
+        _files[message.FileId] = decompressed;
         
         while (callback.TryDequeue(out var action))
         {
@@ -54,7 +54,7 @@ public sealed class FileManager : IInitializable
         }
     }
 
-    public void GetFile(FileId file, Action<byte[]> callback)
+    public void GetFile(FileId file, Action<ContentFile> callback)
     {
         if (_files.TryGetValue(file, out var data))
         {
@@ -64,7 +64,7 @@ public sealed class FileManager : IInitializable
 
         if (!_callbacks.TryGetValue(file, out var callbacks))
         {
-            callbacks = new Queue<Action<byte[]>>();
+            callbacks = new Queue<Action<ContentFile>>();
             _callbacks[file] = callbacks;
         }
         

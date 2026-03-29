@@ -1,6 +1,7 @@
 using Content.Server.FileManagment;
 using Content.Shared.Chat;
 using Content.Shared.FileManagment;
+using Content.Shared.Utils;
 using Robust.Server.GameObjects;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Network;
@@ -29,7 +30,16 @@ public sealed class ChannelSystem : EntitySystem
         if(!TryGetEntity(message.MsgChannel, out var attachedEnt, out var currChannel)) 
             return;
         
-        SendMessage(currChannel, attachedEnt,  null, _fileManager.AddFile(message.File));
+        const int maxLength = 512 * 8000;
+        
+        if(message.File.Length > maxLength)
+        {
+            SendMessageToUser(currChannel, attachedEnt, 
+                $"This file is too big! File length {FileLengthFormater.FormatBytes(message.File.Length)} is bigger that max file uploading length {FileLengthFormater.FormatBytes(maxLength)}");
+            return;
+        }
+        
+        SendMessage(currChannel, attachedEnt,  null, _fileManager.AddFile(message.FileName, message.File));
     }
 
     private void OnSelectedChannel(ChatClientServerSelectChannelMessage message)
@@ -103,6 +113,21 @@ public sealed class ChannelSystem : EntitySystem
             Entries = channel.Comp.ChatEntries.ToArray(), 
             ChannelId = GetNetEntity(channel)
         }, entityUid);
+    }
+
+    public void SendMessageToUser(Entity<ChatChannelComponent?, MapComponent?> channel, EntityUid recipement, string message)
+    {
+        var entry = new ChatEntry()
+        {
+            Message = message,
+            SendTime = DateTime.Now
+        };
+        
+        RaiseNetworkEvent(new ChatSendEvent()
+        {
+            Entries = [entry],
+            ChannelId = GetNetEntity(channel)
+        }, recipement);
     }
     
     public void SendMessage(Entity<ChatChannelComponent?, MapComponent?> channel, EntityUid? userId, string? message, FileId? file)

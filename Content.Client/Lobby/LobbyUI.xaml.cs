@@ -45,7 +45,8 @@ public sealed partial class LobbyUI : UIScreen, IChatHandler
         
         var bytes = memoryStream.ToArray();
         
-        _entitySystemManager.GetEntitySystem<ChatSystem>().SendFile(bytes);
+        //TODO: Make a real naming of file
+        _entitySystemManager.GetEntitySystem<ChatSystem>().SendFile("test.png", bytes);
     }
 
     private void SendButtonPressed(BaseButton.ButtonEventArgs obj)

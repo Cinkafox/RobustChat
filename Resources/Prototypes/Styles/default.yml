@@ -26,7 +26,7 @@
       contentMarginBottomOverride: 8
       backgroundColor: "#111111"
       borderThickness: 5,0,0,0
-      borderColor: "#aaaaaa"
+      borderColor: "#aaaaaa"  
 
 
 - type: dynamicValue
@@ -37,6 +37,26 @@
     value:
       backgroundColor: "#222222"
       borderColor: "#aaaaaa"
+      
+- type: dynamicValue
+  id: buttonChatControl
+  value:
+    valueType: Robust.Client.Graphics.StyleBoxFlat
+    value:
+      contentMarginLeftOverride: 8
+      contentMarginTopOverride: 1
+      contentMarginBottomOverride: 1
+      contentMarginRightOverride: 8
+      backgroundColor: "#111111"
+
+
+- type: dynamicValue
+  id: buttonChatControlPushed
+  value:
+    parent: buttonChatControl
+    valueType: Robust.Client.Graphics.StyleBoxFlat
+    value:
+      backgroundColor: "#222222"
 
 - type: styleSheet
   id: default
@@ -70,3 +90,14 @@
       stylebox: buttonSelectChatPushed  
     ContainerButton.chat-select:disabled:
       stylebox: buttonSelectChatPushed
+    ContainerButton.chat-control-btn:normal:
+      stylebox: buttonChatControl
+    ContainerButton.chat-control-btn:hover:
+      stylebox: 
+       parent: buttonChatControl
+       value:
+         backgroundColor: "#222222"
+    ContainerButton.chat-control-btn:pressed:
+      stylebox: buttonChatControlPushed
+    ContainerButton.chat-control-btn:disabled:
+      stylebox: buttonChatControlPushed
